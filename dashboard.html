@@ -3,95 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QC Dashboard</title>
+    <title>Dashboard - QC Professional</title>
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="manifest" href="manifest.json">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Mobile Navigation Bottom (seperti app) -->
+    
+    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="dashboard.html" class="active">
-            <svg>...</svg>
+            <span>🏠</span>
             <span>Dashboard</span>
         </a>
         <a href="inspection.html">
-            <svg>...</svg>
+            <span>📋</span>
             <span>Inspeksi</span>
         </a>
         <a href="defect-report.html">
-            <svg>...</svg>
+            <span>📊</span>
             <span>Defect</span>
         </a>
         <a href="history.html">
-            <svg>...</svg>
+            <span>📜</span>
             <span>Riwayat</span>
         </a>
-        <a href="settings.html">
-            <svg>...</svg>
-            <span>Settings</span>
+        <a href="#" id="logout-btn">
+            <span>🚪</span>
+            <span>Keluar</span>
         </a>
     </nav>
-
+    
     <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="app-header">
-            <h1>📊 QC Dashboard</h1>
-            <span class="badge">Shift: Pagi</span>
+    <main class="main-content" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+            <h1 style="font-size: 24px;">📊 QC Dashboard</h1>
+            <span id="user-email" style="color: #64748b; font-size: 14px; background: #f1f5f9; padding: 6px 16px; border-radius: 20px;"></span>
         </header>
-
+        
         <!-- KPI Cards -->
-        <section class="kpi-grid">
-            <div class="kpi-card">
-                <span class="label">Total Inspeksi</span>
-                <span class="value" id="total-inspections">1,284</span>
-                <span class="trend up">↑ 12%</span>
+        <div class="kpi-grid">
+            <div class="card">
+                <div style="color: #64748b; font-size: 13px;">Total Inspeksi</div>
+                <div style="font-size: 28px; font-weight: 700;" id="total-inspections">0</div>
             </div>
-            <div class="kpi-card">
-                <span class="label">Defect Rate</span>
-                <span class="value" id="defect-rate">2.4%</span>
-                <span class="trend down">↓ 0.3%</span>
+            <div class="card">
+                <div style="color: #64748b; font-size: 13px;">Defect Rate</div>
+                <div style="font-size: 28px; font-weight: 700;" id="defect-rate">0%</div>
             </div>
-            <div class="kpi-card">
-                <span class="label">Passed</span>
-                <span class="value" id="passed">1,253</span>
-                <span class="trend up">↑ 8%</span>
+            <div class="card">
+                <div style="color: #64748b; font-size: 13px;">Passed</div>
+                <div style="font-size: 28px; font-weight: 700; color: #16a34a;" id="passed">0</div>
             </div>
-            <div class="kpi-card">
-                <span class="label">Rejected</span>
-                <span class="value" id="rejected">31</span>
-                <span class="trend down">↓ 5%</span>
+            <div class="card">
+                <div style="color: #64748b; font-size: 13px;">Rejected</div>
+                <div style="font-size: 28px; font-weight: 700; color: #dc2626;" id="rejected">0</div>
             </div>
-        </section>
-
-        <!-- Grafik Defect (Chart.js) -->
-        <section class="chart-container">
-            <h3>Top 5 Defect Types</h3>
-            <canvas id="defectChart" height="200"></canvas>
-        </section>
-
-        <!-- Tabel Inspeksi Terbaru (mobile scroll) -->
-        <section class="recent-inspections">
-            <h3>Inspeksi Terakhir</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr><th>Produk</th><th>Status</th><th>Qty</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>PCB-A01</td><td><span class="status pass">✓ Pass</span></td><td>500</td></tr>
-                        <tr><td>PCB-B02</td><td><span class="status fail">✗ Fail</span></td><td>200</td></tr>
-                        <tr><td>PCB-C03</td><td><span class="status pass">✓ Pass</span></td><td>350</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card" style="margin-top: 20px; padding: 24px; text-align: center;">
+            <p style="color: #64748b; font-size: 16px; margin-bottom: 16px;">
+                ✅ Dashboard siap digunakan. Mulai inspeksi sekarang!
+            </p>
+            <a href="inspection.html" class="btn-primary">Mulai Inspeksi</a>
+        </div>
     </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- ===== JAVASCRIPT ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js">
+    </script>
     <script src="js/app.js"></script>
-    <script src="js/dashboard.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cek login
+            const user = getCurrentUser();
+            if (!user) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            document.getElementById('user-email').textContent = '👤 ' + user.email;
+            
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Yakin ingin keluar?')) {
+                    logoutUser();
+                }
+            });
+            
+            // Load stats
+            loadDashboardStats();
+        });
+    </script>
 </body>
 </html>

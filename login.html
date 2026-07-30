@@ -3,225 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login - QC Professional</title>
+    <title>QC Professional System</title>
     
-    <!-- CSS -->
+    <meta name="description" content="Quality Control Professional System">
+    <meta name="theme-color" content="#2563eb">
+    
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/index.css">
     
-    <!-- Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page">
+<body>
     
-    <div class="auth-container">
-        <div class="auth-card">
-            <!-- Header -->
-            <div class="auth-header">
-                <div class="auth-logo">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-container">
+            <!-- Brand Header -->
+            <div class="brand-header">
+                <div class="logo">
                     <span class="logo-icon">🔍</span>
                     <span class="logo-text">QC Professional</span>
                 </div>
-                <p class="auth-subtitle">Quality Control System</p>
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn-login">Masuk</a>
+                    <a href="login.html" class="btn-register">Daftar</a>
+                </div>
             </div>
             
-            <!-- Form Login -->
-            <form id="login-form" class="auth-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        placeholder="you@company.com" 
-                        required
-                        autocomplete="email"
-                    >
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    Sistem Inspeksi Kelas Dunia
+                </div>
+                <h1 class="hero-title">
+                    Quality Control<br>
+                    <span class="gradient-text">Sempurna & Profesional</span>
+                </h1>
+                <p class="hero-description">
+                    Platform inspeksi kualitas terintegrasi dengan teknologi modern.
+                    Real-time monitoring, analisis defect, dan pelaporan instan.
+                </p>
+                
+                <div class="hero-actions">
+                    <a href="login.html" class="btn-primary btn-large">
+                        Mulai Inspeksi
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="#features" class="btn-secondary btn-large">
+                        Pelajari Lebih Lanjut
+                    </a>
                 </div>
                 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="password-wrapper">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            placeholder="••••••••" 
-                            required
-                            autocomplete="current-password"
-                        >
-                        <button type="button" id="toggle-password" class="toggle-password">
-                            👁️
-                        </button>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-inspections">1,284</span>
+                        <span class="stat-label">Total Inspeksi</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-defect-rate">2.4%</span>
+                        <span class="stat-label">Defect Rate</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="stat-passed">1,253</span>
+                        <span class="stat-label">Produk Lulus</span>
                     </div>
                 </div>
-                
-                <div class="form-options">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="remember-me">
-                        <span>Ingat saya</span>
-                    </label>
-                    <a href="#" class="forgot-password">Lupa password?</a>
-                </div>
-                
-                <button type="submit" class="btn-primary btn-full" id="login-btn">
-                    <span id="login-text">Masuk</span>
-                    <span id="login-loader" class="loader-hidden">⏳</span>
-                </button>
-            </form>
-            
-            <!-- Footer -->
-            <p class="auth-footer">
-                Belum punya akun? 
-                <a href="#" id="register-toggle">Daftar sekarang</a>
-            </p>
-            
-            <!-- Divider -->
-            <div class="auth-divider">
-                <span>atau</span>
             </div>
             
-            <!-- Demo Account -->
-            <div class="demo-account">
-                <p class="demo-label">👨‍💻 Akun Demo</p>
-                <div class="demo-credentials">
-                    <span>email: <strong>demo@qc.com</strong></span>
-                    <span>password: <strong>demo123</strong></span>
+            <!-- Hero Illustration -->
+            <div class="hero-illustration">
+                <div class="illustration-card">
+                    <div class="card-header">
+                        <span class="card-dot red"></span>
+                        <span class="card-dot yellow"></span>
+                        <span class="card-dot green"></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bars">
+                            <div class="bar" style="height: 60px; background: #3b82f6;"></div>
+                            <div class="bar" style="height: 90px; background: #8b5cf6;"></div>
+                            <div class="bar" style="height: 45px; background: #ec4899;"></div>
+                            <div class="bar" style="height: 75px; background: #f59e0b;"></div>
+                            <div class="bar" style="height: 100px; background: #10b981;"></div>
+                        </div>
+                        <div class="card-stats">
+                            <div><span class="dot green"></span> Pass: 85%</div>
+                            <div><span class="dot red"></span> Fail: 15%</div>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" id="demo-login" class="btn-secondary btn-full">
-                    Login dengan Demo
-                </button>
             </div>
         </div>
-    </div>
+        
+        <div class="wave-bg">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+                <path fill="rgba(37, 99, 235, 0.05)" d="M0,192L48,176C96,160,192,128,288,122.7C384,117,480,139,576,154.7C672,171,768,181,864,176C960,171,1056,149,1152,144C1248,139,1344,149,1392,154.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"/>
+            </svg>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Fitur Unggulan</span>
+                <h2>Dirancang untuk <span class="gradient-text">Profesional QC</span></h2>
+                <p>Semua yang Anda butuhkan dalam satu platform terintegrasi</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboard Real-time</h3>
+                    <p>Monitoring KPI inspeksi secara langsung dengan grafik interaktif dan update otomatis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Form Inspeksi Digital</h3>
+                    <p>Checklist terstruktur dengan kategorisasi defect (Critical, Major, Minor) dan upload foto.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile-Friendly</h3>
+                    <p>Dioptimalkan untuk smartphone dengan navigasi bottom bar seperti aplikasi native.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Realtime Sync</h3>
+                    <p>Sinkronisasi data otomatis dengan Supabase, semua tim ter-update instan.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Dokumentasi Foto</h3>
+                    <p>Capture dan upload foto defect langsung dari kamera HP ke cloud storage.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Analisis AQL</h3>
+                    <p>Perhitungan sampel otomatis berdasarkan standar MIL-STD-105E.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Keamanan Data</h3>
+                    <p>Autentikasi Supabase dengan Row Level Security untuk proteksi data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Export Laporan</h3>
+                    <p>Ekspor hasil inspeksi ke PDF dan Excel untuk dokumentasi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2>Siap Meningkatkan Kualitas Produk Anda?</h2>
+                <p>Mulai gunakan QC Professional System sekarang dan dapatkan kontrol kualitas yang sempurna.</p>
+                <div class="cta-buttons">
+                    <a href="login.html" class="btn-primary btn-large">Mulai Sekarang</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">🔍</span>
+                        <span class="logo-text">QC Professional</span>
+                    </div>
+                    <p>Solusi Quality Control kelas dunia untuk industri modern.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Produk</h4>
+                    <a href="#">Fitur</a>
+                    <a href="#">Integrasi</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Perusahaan</h4>
+                    <a href="#">Tentang</a>
+                    <a href="#">Tim</a>
+                </div>
+                <div class="footer-links">
+                    <h4>Dukungan</h4>
+                    <a href="#">Dokumentasi</a>
+                    <a href="#">Kontak</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 QC Professional System. Dibangun dengan ❤️ dan Supabase.</p>
+                <div class="footer-legal">
+                    <a href="#">Kebijakan Privasi</a>
+                    <a href="#">Syarat & Ketentuan</a>
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <!-- ===== JAVASCRIPT ===== -->
-    <script type="module">
-        import { login, register } from './js/auth.js';
-        
-        // DOM Elements
-        const form = document.getElementById('login-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('login-btn');
-        const loginText = document.getElementById('login-text');
-        const loginLoader = document.getElementById('login-loader');
-        const togglePassword = document.getElementById('toggle-password');
-        const registerToggle = document.getElementById('register-toggle');
-        const demoBtn = document.getElementById('demo-login');
-        
-        // Toggle password visibility
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+    <script>
+        // Smooth scroll untuk anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         });
         
-        // Handle login form submission
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            
-            if (!email || !password) {
-                alert('Harap isi email dan password!');
-                return;
-            }
-            
-            // Show loading state
-            loginText.textContent = 'Memproses...';
-            loginLoader.classList.remove('loader-hidden');
-            loginBtn.disabled = true;
-            
-            const result = await login(email, password);
-            
-            // Reset button state
-            loginText.textContent = 'Masuk';
-            loginLoader.classList.add('loader-hidden');
-            loginBtn.disabled = false;
-            
-            if (!result.success) {
-                alert('❌ Login gagal: ' + result.message);
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
+        // Animation on scroll untuk feature cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.feature-card, .step').forEach(el => {
+            observer.observe(el);
         });
         
-        // Switch to register mode
-        registerToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Toggle between login and register
-            const isRegister = form.dataset.mode === 'register';
-            
-            if (!isRegister) {
-                // Switch to register
-                form.dataset.mode = 'register';
-                document.querySelector('.auth-header h1').textContent = 'Daftar Akun';
-                document.querySelector('.auth-subtitle').textContent = 'Buat akun QC Professional';
-                loginBtn.textContent = 'Daftar';
-                document.querySelector('.auth-footer').innerHTML = 
-                    'Sudah punya akun? <a href="#" id="login-toggle">Masuk</a>';
-                document.querySelector('.auth-divider').style.display = 'none';
-                document.querySelector('.demo-account').style.display = 'none';
-                
-                // Add full name field for registration
-                const nameField = document.createElement('div');
-                nameField.className = 'form-group';
-                nameField.id = 'name-field';
-                nameField.innerHTML = `
-                    <label for="full-name">Nama Lengkap</label>
-                    <input type="text" id="full-name" placeholder="John Doe" required>
-                `;
-                form.insertBefore(nameField, form.querySelector('.form-group'));
-                
-                // Update event listener
-                form.onsubmit = async (e) => {
-                    e.preventDefault();
-                    const name = document.getElementById('full-name').value.trim();
-                    const email = emailInput.value.trim();
-                    const password = passwordInput.value.trim();
-                    
-                    if (!name || !email || !password) {
-                        alert('Harap isi semua field!');
-                        return;
-                    }
-                    
-                    const result = await register(email, password, name);
-                    if (result.success) {
-                        alert('✅ Pendaftaran berhasil! Silakan login.');
-                        // Switch back to login
-                        window.location.reload();
-                    } else {
-                        alert('❌ Pendaftaran gagal: ' + result.message);
-                    }
-                };
-                
-                // Add login toggle
-                document.getElementById('login-toggle').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.reload();
-                });
-            }
-        });
-        
-        // Demo login
-        demoBtn.addEventListener('click', async () => {
-            emailInput.value = 'demo@qc.com';
-            passwordInput.value = 'demo123';
-            
-            // Auto submit
-            form.dispatchEvent(new Event('submit'));
-        });
-        
-        // Enter key support
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && document.activeElement === emailInput) {
-                passwordInput.focus();
-            }
-        });
-        
-        console.log('✅ Login page loaded successfully');
+        console.log('✅ Landing page loaded');
     </script>
 </body>
 </html>

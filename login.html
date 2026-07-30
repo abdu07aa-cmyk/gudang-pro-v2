@@ -1,52 +1,227 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - QC System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - QC Professional</title>
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
+    
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 </head>
 <body class="auth-page">
+    
     <div class="auth-container">
         <div class="auth-card">
+            <!-- Header -->
             <div class="auth-header">
-                <h1>🔍 QC Professional</h1>
-                <p>Quality Control System</p>
+                <div class="auth-logo">
+                    <span class="logo-icon">🔍</span>
+                    <span class="logo-text">QC Professional</span>
+                </div>
+                <p class="auth-subtitle">Quality Control System</p>
             </div>
             
-            <form id="login-form">
+            <!-- Form Login -->
+            <form id="login-form" class="auth-form">
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="email" placeholder="you@company.com" required>
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="you@company.com" 
+                        required
+                        autocomplete="email"
+                    >
                 </div>
+                
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            placeholder="••••••••" 
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" id="toggle-password" class="toggle-password">
+                            👁️
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary">Masuk</button>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        <span>Ingat saya</span>
+                    </label>
+                    <a href="#" class="forgot-password">Lupa password?</a>
+                </div>
+                
+                <button type="submit" class="btn-primary btn-full" id="login-btn">
+                    <span id="login-text">Masuk</span>
+                    <span id="login-loader" class="loader-hidden">⏳</span>
+                </button>
             </form>
             
+            <!-- Footer -->
             <p class="auth-footer">
-                Belum punya akun? <a href="#" id="register-toggle">Daftar</a>
+                Belum punya akun? 
+                <a href="#" id="register-toggle">Daftar sekarang</a>
             </p>
+            
+            <!-- Divider -->
+            <div class="auth-divider">
+                <span>atau</span>
+            </div>
+            
+            <!-- Demo Account -->
+            <div class="demo-account">
+                <p class="demo-label">👨‍💻 Akun Demo</p>
+                <div class="demo-credentials">
+                    <span>email: <strong>demo@qc.com</strong></span>
+                    <span>password: <strong>demo123</strong></span>
+                </div>
+                <button type="button" id="demo-login" class="btn-secondary btn-full">
+                    Login dengan Demo
+                </button>
+            </div>
         </div>
     </div>
     
+    <!-- ===== JAVASCRIPT ===== -->
     <script type="module">
         import { login, register } from './js/auth.js';
         
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        // DOM Elements
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginText = document.getElementById('login-text');
+        const loginLoader = document.getElementById('login-loader');
+        const togglePassword = document.getElementById('toggle-password');
+        const registerToggle = document.getElementById('register-toggle');
+        const demoBtn = document.getElementById('demo-login');
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+        
+        // Handle login form submission
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!email || !password) {
+                alert('Harap isi email dan password!');
+                return;
+            }
+            
+            // Show loading state
+            loginText.textContent = 'Memproses...';
+            loginLoader.classList.remove('loader-hidden');
+            loginBtn.disabled = true;
             
             const result = await login(email, password);
+            
+            // Reset button state
+            loginText.textContent = 'Masuk';
+            loginLoader.classList.add('loader-hidden');
+            loginBtn.disabled = false;
+            
             if (!result.success) {
-                alert('Login gagal: ' + result.message);
+                alert('❌ Login gagal: ' + result.message);
+                passwordInput.value = '';
+                passwordInput.focus();
             }
         });
+        
+        // Switch to register mode
+        registerToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Toggle between login and register
+            const isRegister = form.dataset.mode === 'register';
+            
+            if (!isRegister) {
+                // Switch to register
+                form.dataset.mode = 'register';
+                document.querySelector('.auth-header h1').textContent = 'Daftar Akun';
+                document.querySelector('.auth-subtitle').textContent = 'Buat akun QC Professional';
+                loginBtn.textContent = 'Daftar';
+                document.querySelector('.auth-footer').innerHTML = 
+                    'Sudah punya akun? <a href="#" id="login-toggle">Masuk</a>';
+                document.querySelector('.auth-divider').style.display = 'none';
+                document.querySelector('.demo-account').style.display = 'none';
+                
+                // Add full name field for registration
+                const nameField = document.createElement('div');
+                nameField.className = 'form-group';
+                nameField.id = 'name-field';
+                nameField.innerHTML = `
+                    <label for="full-name">Nama Lengkap</label>
+                    <input type="text" id="full-name" placeholder="John Doe" required>
+                `;
+                form.insertBefore(nameField, form.querySelector('.form-group'));
+                
+                // Update event listener
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('full-name').value.trim();
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if (!name || !email || !password) {
+                        alert('Harap isi semua field!');
+                        return;
+                    }
+                    
+                    const result = await register(email, password, name);
+                    if (result.success) {
+                        alert('✅ Pendaftaran berhasil! Silakan login.');
+                        // Switch back to login
+                        window.location.reload();
+                    } else {
+                        alert('❌ Pendaftaran gagal: ' + result.message);
+                    }
+                };
+                
+                // Add login toggle
+                document.getElementById('login-toggle').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.reload();
+                });
+            }
+        });
+        
+        // Demo login
+        demoBtn.addEventListener('click', async () => {
+            emailInput.value = 'demo@qc.com';
+            passwordInput.value = 'demo123';
+            
+            // Auto submit
+            form.dispatchEvent(new Event('submit'));
+        });
+        
+        // Enter key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.activeElement === emailInput) {
+                passwordInput.focus();
+            }
+        });
+        
+        console.log('✅ Login page loaded successfully');
     </script>
 </body>
 </html>

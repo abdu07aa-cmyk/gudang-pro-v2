@@ -71,98 +71,22 @@
             </div>
         </div>
     </div>
-    
-    <!-- ===== JAVASCRIPT ===== -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js">
-    </script>
-    <script src="js/app.js"></script>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Cek sudah login
-        const user = getCurrentUser();
-        if (user) {
-            window.location.href = '/dashboard.html';
-            return;
-        }
-        
-        const form = document.getElementById('login-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('login-btn');
-        const loginText = document.getElementById('login-text');
-        const loginLoader = document.getElementById('login-loader');
-        const togglePassword = document.getElementById('toggle-password');
-        const demoBtn = document.getElementById('demo-login');
-        const registerToggle = document.getElementById('register-toggle');
-        
-        // Toggle password
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.type === 'password' ? 'text' : 'password';
-            passwordInput.type = type;
-            this.textContent = type === 'password' ? '👁️' : '🙈';
-        });
-        
-        // Login
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            
-            if (!email || !password) {
-                alert('⚠️ Isi email dan password!');
-                return;
-            }
-            
-            loginText.textContent = 'Memproses...';
-            loginLoader.classList.remove('loader-hidden');
-            loginBtn.disabled = true;
-            
-            const result = await loginUser(email, password);
-            
-            loginText.textContent = 'Masuk';
-            loginLoader.classList.add('loader-hidden');
-            loginBtn.disabled = false;
-            
-            if (result.success) {
-                window.location.href = '/dashboard.html';
-            } else {
-                alert('❌ Login gagal: ' + result.message);
-            }
-        });
-        
-        // Demo
-        demoBtn.addEventListener('click', function() {
-            emailInput.value = 'demo@qc.com';
-            passwordInput.value = 'demo123';
-            form.dispatchEvent(new Event('submit'));
-        });
-        
-        // Register
-        registerToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            const fullName = prompt('📝 Masukkan nama lengkap:');
-            if (!fullName) return;
-            const email = prompt('📧 Masukkan email:');
-            if (!email) return;
-            const password = prompt('🔑 Masukkan password (min 6 karakter):');
-            if (!password || password.length < 6) {
-                alert('Password minimal 6 karakter!');
-                return;
-            }
-            
-            registerUser(email, password, fullName).then(result => {
-                if (result.success) {
-                    alert('✅ Pendaftaran berhasil! Silakan login.');
-                } else {
-                    alert('❌ Pendaftaran gagal: ' + result.message);
-                }
-            });
-        });
-        
-        console.log('✅ Login page ready');
-    });
-    </script>
+<!-- ===== JAVASCRIPT ===== -->
+<!-- Gunakan CDN yang PALING STABIL -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js">
+</script>
+
+<!-- TAMBAHKAN INI UNTUK DEBUG -->
+<script>
+    console.log('Supabase loaded:', typeof supabase !== 'undefined');
+    console.log('SupabaseJs loaded:', typeof supabaseJs !== 'undefined');
+    // Jika supabase tersedia, simpan ke window
+    if (typeof supabase !== 'undefined') {
+        window.supabase = supabase;
+        console.log('✅ Supabase saved to window');
+    }
+</script>
+
+<script src="js/app.js"></script>
 </body>
 </html>

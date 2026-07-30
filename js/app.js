@@ -1,33 +1,42 @@
-// js/app.js - VERSI TERBARU (PASTI JALAN)
+// js/app.js - VERSI FINAL (PASTI JALAN)
 
 // ===== KONFIGURASI SUPABASE =====
 // ⚠️ GANTI DENGAN KREDENSIAL SUPABASE ANDA!
-// Bisa dapatkan dari: https://supabase.com/dashboard/project/_/settings/api
 const SUPABASE_URL = 'https://dggspzjibisapdaowkkj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnZ3NwemppYmlzYXBkYW93a2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NjMxNzksImV4cCI6MjA4MzQzOTE3OX0.DtDb10SzKfwJg3bbVq53nG9RIXbZYtitXn67ZtdBMFY';
 
 let supabaseClient = null;
 
-// Inisialisasi Supabase - CEK BAIK DARI CDN ATAU GLOBAL
+// Inisialisasi Supabase - VERSI PALING ROBUST
 function initSupabase() {
-    // Cek apakah supabase tersedia dari CDN (umd)
+    // Cek berbagai kemungkinan variable name
+    let SupabaseLib = null;
+    
+    // Cek dari berbagai sumber
     if (typeof supabase !== 'undefined') {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized from CDN');
-        return true;
+        SupabaseLib = supabase;
+        console.log('✅ Found supabase (global)');
+    } else if (typeof supabaseJs !== 'undefined') {
+        SupabaseLib = supabaseJs;
+        console.log('✅ Found supabaseJs (global)');
+    } else if (window.supabase) {
+        SupabaseLib = window.supabase;
+        console.log('✅ Found window.supabase');
+    } else {
+        console.warn('⚠️ Supabase not found, retrying...');
+        // Retry after 1 second
+        setTimeout(initSupabase, 1000);
+        return false;
     }
     
-    // Cek apakah supabaseJs tersedia (alternatif)
-    if (typeof supabaseJs !== 'undefined') {
-        supabaseClient = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized from supabaseJs');
+    try {
+        supabaseClient = SupabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase initialized successfully');
         return true;
+    } catch (error) {
+        console.error('❌ Failed to initialize Supabase:', error);
+        return false;
     }
-    
-    console.warn('⚠️ Supabase not loaded yet, retrying...');
-    // Retry after 1 second
-    setTimeout(initSupabase, 1000);
-    return false;
 }
 
 // ===== FUNGSI AUTH =====
@@ -154,11 +163,11 @@ window.loadDashboardStats = loadDashboardStats;
 window.formatNumber = formatNumber;
 window.showToast = showToast;
 
-// Auto-init saat halaman load
+// Auto-init
 document.addEventListener('DOMContentLoaded', function() {
-    // Coba init setelah 500ms
+    // Coba init beberapa kali
     setTimeout(initSupabase, 500);
-    // Coba lagi setelah 2 detik jika gagal
-    setTimeout(initSupabase, 2000);
+    setTimeout(initSupabase, 1500);
+    setTimeout(initSupabase, 3000);
     console.log('✅ App.js loaded');
 });

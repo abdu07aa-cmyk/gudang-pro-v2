@@ -1,7 +1,7 @@
 // js/auth.js
 import supabase from './supabase-client.js';
 
-// Login dengan email & password
+// Login
 export async function login(email, password) {
     try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -11,7 +11,6 @@ export async function login(email, password) {
         
         if (error) throw error;
         
-        // Simpan session ke localStorage
         localStorage.setItem('user', JSON.stringify(data.user));
         window.location.href = '/dashboard.html';
         return { success: true, user: data.user };
@@ -21,7 +20,7 @@ export async function login(email, password) {
     }
 }
 
-// Register user baru
+// Register
 export async function register(email, password, fullName, role = 'inspector') {
     try {
         const { data, error } = await supabase.auth.signUp({
@@ -30,7 +29,7 @@ export async function register(email, password, fullName, role = 'inspector') {
             options: {
                 data: {
                     full_name: fullName,
-                    role: role // 'admin', 'inspector', 'supervisor'
+                    role: role
                 }
             }
         });
@@ -50,13 +49,13 @@ export async function logout() {
     window.location.href = '/login.html';
 }
 
-// Cek session aktif
+// Get current user
 export async function getCurrentUser() {
     const { data: { user } } = await supabase.auth.getUser();
     return user;
 }
 
-// Middleware untuk proteksi halaman
+// Require auth (middleware)
 export function requireAuth() {
     const user = localStorage.getItem('user');
     if (!user) {

@@ -1,8 +1,7 @@
-// js/app.js - VERSI PALING SIMPEL, PASTI JALAN
+// js/app.js - VERSI TANPA MODULE (PASTI JALAN)
 
 // ===== KONFIGURASI SUPABASE =====
 // ⚠️ GANTI DENGAN KREDENSIAL SUPABASE ANDA!
-// Bisa dapatkan dari: https://supabase.com/dashboard/project/_/settings/api
 const SUPABASE_URL = 'https://your-project-id.supabase.co';
 const SUPABASE_ANON_KEY = 'your-anon-key-here';
 
@@ -19,7 +18,7 @@ function initSupabase() {
     return false;
 }
 
-// Login function
+// ===== FUNGSI AUTH =====
 async function loginUser(email, password) {
     if (!supabaseClient) initSupabase();
     if (!supabaseClient) {
@@ -41,7 +40,6 @@ async function loginUser(email, password) {
     }
 }
 
-// Register function
 async function registerUser(email, password, fullName) {
     if (!supabaseClient) initSupabase();
     if (!supabaseClient) {
@@ -64,14 +62,12 @@ async function registerUser(email, password, fullName) {
     }
 }
 
-// Logout
 function logoutUser() {
     if (supabaseClient) supabaseClient.auth.signOut();
     localStorage.removeItem('user');
     window.location.href = '/login.html';
 }
 
-// Get current user
 function getCurrentUser() {
     try {
         const user = localStorage.getItem('user');
@@ -81,7 +77,7 @@ function getCurrentUser() {
     }
 }
 
-// Utility functions
+// ===== FUNGSI UTILITY =====
 function formatNumber(num) {
     return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0';
 }
@@ -101,19 +97,66 @@ function showToast(message, type = 'info') {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// Auto-init saat halaman load
-document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu sebentar agar Supabase CDN selesai load
-    setTimeout(initSupabase, 500);
-    console.log('✅ App.js loaded');
-});
+// ===== FUNGSI DASHBOARD =====
+async function loadDashboardStats() {
+    if (!supabaseClient) initSupabase();
+    if (!supabaseClient) return;
+    
+    try {
+        const { data, error } = await supabaseClient
+            .from('dashboard_stats')
+            .select('*')
+            .single();
+        
+        if (!error && data) {
+            document.getElementById('total-inspections').textContent = formatNumber(data.total_inspections || 0);
+            document.getElementById('passed').textContent = formatNumber(data.passed || 0);
+            document.getElementById('rejected').textContent = formatNumber(data.rejected || 0);
+            
+            const total = data.total_inspections || 0;
+            const rejected = data.rejected || 0;
+            const rate = total > 0 ? ((rejected / total) * 100).toFixed(1) : 0;
+            document.getElementById('defect-rate').textContent = rate + '%';
+        }
+    } catch (error) {
+        console.log('Stats not available yet');
+    }
+}
 
-// Export untuk digunakan di HTML
+// ===== FUNGSI AQL =====
+function calculateAQL(lotSize, level = 'II') {
+    const AQL_TABLE = {
+        'S-1': { '2': 2, '8': 3, '15': 5, '50': 8, '150': 13, '500': 20, '>500': 32 },
+        'S-2': { '2': 3, '8': 5, '15': 8, '50': 13, '150': 20, '500': 32, '>500': 50 },
+        'I':   { '2': 2, '8': 3, '15': 5, '50': 8, '150': 13, '500': 20, '>500': 32 },
+        'II':  { '2': 3, '8': 5, '15': 8, '50': 13, '150': 20, '500': 32, '>500': 50 },
+        'III': { '2': 5, '8': 8, '15': 13, '50': 20, '150': 32, '500': 50, '>500': 80 }
+    };
+    
+    const table = AQL_TABLE[level] || AQL_TABLE['II'];
+    if (lotSize <= 2) return table['2'];
+    if (lotSize <= 8) return table['8'];
+    if (lotSize <= 15) return table['15'];
+    if (lotSize <= 50) return table['50'];
+    if (lotSize <= 150) return table['150'];
+    if (lotSize <= 500) return table['500'];
+    return table['>500'];
+}
+
+// ===== EXPOSE KE GLOBAL =====
+window.supabaseClient = supabaseClient;
+window.initSupabase = initSupabase;
 window.loginUser = loginUser;
 window.registerUser = registerUser;
 window.logoutUser = logoutUser;
 window.getCurrentUser = getCurrentUser;
-window.initSupabase = initSupabase;
-window.supabaseClient = supabaseClient;
 window.showToast = showToast;
 window.formatNumber = formatNumber;
+window.loadDashboardStats = loadDashboardStats;
+window.calculateAQL = calculateAQL;
+
+// Auto-init
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initSupabase, 500);
+    console.log('✅ App.js loaded');
+});

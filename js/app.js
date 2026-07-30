@@ -1,4 +1,4 @@
-// js/app.js - VERSI FINAL (PASTI JALAN 100%)
+// js/app.js - VERSI FINAL, PASTI JALAN
 
 // ===== KONFIGURASI SUPABASE =====
 // ⚠️ GANTI DENGAN KREDENSIAL SUPABASE ANDA!
@@ -7,249 +7,48 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 let supabaseClient = null;
 
-// Inisialisasi Supabase - VERSI PALING ROBUST
+// ===== INIT SUPABASE =====
 function initSupabase() {
-    console.log('🔄 Initializing Supabase...');
+    console.log('🔄 Init Supabase...');
     
-    // Cek dari berbagai kemungkinan
-    let SupabaseLib = null;
-    
-    // Coba dari window (yang sudah disimpan di login.html)
-    if (window.supabase) {
-        SupabaseLib = window.supabase;
-        console.log('✅ Found window.supabase');
-    }
-    // Coba dari global supabase
-    else if (typeof supabase !== 'undefined') {
-        SupabaseLib = supabase;
-        console.log('✅ Found global supabase');
-    }
-    // Coba dari global supabaseJs
-    else if (typeof supabaseJs !== 'undefined') {
-        SupabaseLib = supabaseJs;
-        console.log('✅ Found global supabaseJs');
-    }
-    // Coba dari window.supabaseJs
-    else if (window.supabaseJs) {
-        SupabaseLib = window.supabaseJs;
-        console.log('✅ Found window.supabaseJs');
-    }
-    else {
-        console.warn('⚠️ Supabase library not found, retrying...');
-        // Retry setelah 1 detik
-        setTimeout(initSupabase, 1000);
-        return false;
-    }
-    
-    try {
-        // Cek apakah SupabaseLib memiliki createClient
-        if (typeof SupabaseLib.createClient === 'function') {
-            supabaseClient = SupabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Supabase initialized successfully!');
+    // CDN yang Anda pakai (cdn.jsdelivr.net) menghasilkan variable GLOBAL: supabase
+    // BUKAN supabaseJs!
+    if (typeof supabase !== 'undefined' && supabase !== null) {
+        console.log('✅ Found global "supabase"');
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase client created!');
             return true;
-        } else {
-            console.error('❌ Supabase library does not have createClient method');
-            console.log('Available methods:', Object.keys(SupabaseLib));
+        } catch (e) {
+            console.error('❌ Error creating client:', e);
             return false;
         }
-    } catch (error) {
-        console.error('❌ Failed to initialize Supabase:', error);
-        return false;
-    }
-}
-
-// ===== FUNGSI AUTH =====
-async function loginUser(email, password) {
-    if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) {
-            return { success: false, message: 'Supabase tidak siap. Coba refresh halaman.' };
-        }
     }
     
-    try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-        
-        if (error) throw error;
-        localStorage.setItem('user', JSON.stringify(data.user));
-        return { success: true, user: data.user };
-    } catch (error) {
-        console.error('Login error:', error);
-        return { success: false, message: error.message };
-    }
-}
-
-async function registerUser(email, password, fullName) {
-    if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) {
-            return { success: false, message: 'Supabase tidak siap' };
-        }
-    }
-    
-    try {
-        const { data, error } = await supabaseClient.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: { full_name: fullName, role: 'inspector' }
-            }
-        });
-        if (error) throw error;
-        return { success: true, user: data.user };
-    } catch (error) {
-        console.error('Register error:', error);
-        return { success: false, message: error.message };
-    }
-}
-
-function logoutUser() {
-    if (supabaseClient) supabaseClient.auth.signOut();
-    localStorage.removeItem('user');
-    window.location.href = '/login.html';
-}
-
-function getCurrentUser() {
-    try {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
-    } catch (e) {
-        return null;
-    }
-}
-
-// ===== FUNGSI UTILITY =====
-function formatNumber(num) {
-    return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0';
-}
-
-function showToast(message, type = 'info') {
-    // Hapus toast lama
-    const oldToast = document.querySelector('.toast-custom');
-    if (oldToast) oldToast.remove();
-    
-    const toast = document.createElement('div');
-    toast.className = 'toast-custom';
-    toast.textContent = message;
-    
-    const colors = {
-        success: '#16a34a',
-        error: '#dc2626',
-        info: '#2563eb',
-        warning: '#f59e0b'
-    };
-    
-    toast.style.cssText = `
-        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-        background: ${colors[type] || colors.info}; 
-        color: white; padding: 12px 24px;
-        border-radius: 12px; z-index: 9999; font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        max-width: 90%; text-align: center;
-        animation: slideUp 0.3s ease;
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// ===== FUNGSI DASHBOARD =====
-async function loadDashboardStats() {
-    if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) return;
-    }
-    
-    try {
-        const { data, error } = await supabaseClient
-            .from('dashboard_stats')
-            .select('*')
-            .single();
-        
-        if (!error && data) {
-            const el = (id) => document.getElementById(id);
-            if (el('total-inspections')) el('total-inspections').textContent = formatNumber(data.total_inspections || 0);
-            if (el('passed')) el('passed').textContent = formatNumber(data.passed || 0);
-            if (el('rejected')) el('rejected').textContent = formatNumber(data.rejected || 0);
-            
-            const total = data.total_inspections || 0;
-            const rejected = data.rejected || 0;
-            const rate = total > 0 ? ((rejected / total) * 100).toFixed(1) : 0;
-            if (el('defect-rate')) el('defect-rate').textContent = rate + '%';
-        }
-    } catch (error) {
-        console.log('Stats not available');
-    }
-}
-
-// ===== EXPOSE KE GLOBAL =====
-window.initSupabase = initSupabase;
-window.loginUser = loginUser;
-window.registerUser = registerUser;
-window.logoutUser = logoutUser;
-window.getCurrentUser = getCurrentUser;
-window.loadDashboardStats = loadDashboardStats;
-window.formatNumber = formatNumber;
-window.showToast = showToast;
-
-// Auto-init
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 App.js loaded, initializing...');
-    // Coba init beberapa kali dengan interval
-    setTimeout(initSupabase, 500);
-    setTimeout(initSupabase, 1500);
-    setTimeout(initSupabase, 3000);
-});
-
-console.log('✅ App.js loaded successfully');// js/app.js - VERSI FINAL (PASTI JALAN)
-
-// ===== KONFIGURASI SUPABASE =====
-// ⚠️ GANTI DENGAN KREDENSIAL SUPABASE ANDA!
-const SUPABASE_URL = 'https://dggspzjibisapdaowkkj.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnZ3NwemppYmlzYXBkYW93a2tqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4NjMxNzksImV4cCI6MjA4MzQzOTE3OX0.DtDb10SzKfwJg3bbVq53nG9RIXbZYtitXn67ZtdBMFY';
-
-let supabaseClient = null;
-
-// Inisialisasi Supabase - VERSI PALING ROBUST
-function initSupabase() {
-    // Cek berbagai kemungkinan variable name
-    let SupabaseLib = null;
-    
-    // Cek dari berbagai sumber
-    if (typeof supabase !== 'undefined') {
-        SupabaseLib = supabase;
-        console.log('✅ Found supabase (global)');
-    } else if (typeof supabaseJs !== 'undefined') {
-        SupabaseLib = supabaseJs;
-        console.log('✅ Found supabaseJs (global)');
-    } else if (window.supabase) {
-        SupabaseLib = window.supabase;
+    // Fallback: coba dari window
+    if (window.supabase) {
         console.log('✅ Found window.supabase');
-    } else {
-        console.warn('⚠️ Supabase not found, retrying...');
-        // Retry after 1 second
-        setTimeout(initSupabase, 1000);
-        return false;
+        try {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('✅ Supabase client created!');
+            return true;
+        } catch (e) {
+            console.error('❌ Error creating client:', e);
+            return false;
+        }
     }
     
-    try {
-        supabaseClient = SupabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized successfully');
-        return true;
-    } catch (error) {
-        console.error('❌ Failed to initialize Supabase:', error);
-        return false;
-    }
+    console.warn('⚠️ Supabase not found, retrying...');
+    setTimeout(initSupabase, 1000);
+    return false;
 }
 
-// ===== FUNGSI AUTH =====
+// ===== LOGIN =====
 async function loginUser(email, password) {
     if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) {
-            return { success: false, message: 'Supabase tidak siap. Coba refresh halaman.' };
+        const ok = initSupabase();
+        if (!ok) {
+            return { success: false, message: 'Supabase tidak siap. Refresh halaman.' };
         }
     }
     
@@ -268,10 +67,11 @@ async function loginUser(email, password) {
     }
 }
 
+// ===== REGISTER =====
 async function registerUser(email, password, fullName) {
     if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) {
+        const ok = initSupabase();
+        if (!ok) {
             return { success: false, message: 'Supabase tidak siap' };
         }
     }
@@ -292,12 +92,14 @@ async function registerUser(email, password, fullName) {
     }
 }
 
+// ===== LOGOUT =====
 function logoutUser() {
     if (supabaseClient) supabaseClient.auth.signOut();
     localStorage.removeItem('user');
     window.location.href = '/login.html';
 }
 
+// ===== GET CURRENT USER =====
 function getCurrentUser() {
     try {
         const user = localStorage.getItem('user');
@@ -307,33 +109,31 @@ function getCurrentUser() {
     }
 }
 
-// ===== FUNGSI UTILITY =====
+// ===== UTILITY =====
 function formatNumber(num) {
     return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0';
 }
 
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
     toast.textContent = message;
+    const colors = { success: '#16a34a', error: '#dc2626', info: '#2563eb' };
     toast.style.cssText = `
         position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-        background: #1a1a2e; color: white; padding: 12px 24px;
-        border-radius: 12px; z-index: 9999; font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        background: ${colors[type] || colors.info}; color: white; 
+        padding: 12px 24px; border-radius: 12px; z-index: 9999;
+        font-weight: 500; max-width: 90%; text-align: center;
         animation: slideUp 0.3s ease;
-        max-width: 90%;
-        text-align: center;
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
 
-// ===== FUNGSI DASHBOARD =====
+// ===== DASHBOARD STATS =====
 async function loadDashboardStats() {
     if (!supabaseClient) {
-        const inited = initSupabase();
-        if (!inited) return;
+        const ok = initSupabase();
+        if (!ok) return;
     }
     
     try {
@@ -347,7 +147,6 @@ async function loadDashboardStats() {
             if (el('total-inspections')) el('total-inspections').textContent = formatNumber(data.total_inspections || 0);
             if (el('passed')) el('passed').textContent = formatNumber(data.passed || 0);
             if (el('rejected')) el('rejected').textContent = formatNumber(data.rejected || 0);
-            
             const total = data.total_inspections || 0;
             const rejected = data.rejected || 0;
             const rate = total > 0 ? ((rejected / total) * 100).toFixed(1) : 0;
@@ -368,11 +167,6 @@ window.loadDashboardStats = loadDashboardStats;
 window.formatNumber = formatNumber;
 window.showToast = showToast;
 
-// Auto-init
-document.addEventListener('DOMContentLoaded', function() {
-    // Coba init beberapa kali
-    setTimeout(initSupabase, 500);
-    setTimeout(initSupabase, 1500);
-    setTimeout(initSupabase, 3000);
-    console.log('✅ App.js loaded');
-});
+// ===== AUTO INIT =====
+console.log('🚀 App.js loaded');
+setTimeout(initSupabase, 500);

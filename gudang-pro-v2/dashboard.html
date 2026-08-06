@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Gudang Pro</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b2226">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="menu-toggle" id="menu-toggle">☰</button>
+          <h1>Dashboard</h1>
+        </div>
+        <div id="welcome-msg" style="font-size:13px;color:var(--ink-soft);"></div>
+      </div>
+      <div class="content">
+        <div class="grid grid-4" id="stat-tiles">
+          <div class="card stat-tile"><div class="tag">Total SKU</div><div class="value" id="stat-total-items">–</div><div class="hint">item terdaftar</div></div>
+          <div class="card stat-tile"><div class="tag">Stok Menipis</div><div class="value alert" id="stat-low-stock">–</div><div class="hint">di bawah minimum</div></div>
+          <div class="card stat-tile"><div class="tag">Barang Masuk (30 hari)</div><div class="value ok" id="stat-in-30d">–</div><div class="hint">transaksi</div></div>
+          <div class="card stat-tile"><div class="tag">Barang Keluar (30 hari)</div><div class="value" id="stat-out-30d">–</div><div class="hint">transaksi</div></div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top:16px;">
+          <div class="card">
+            <h2>⚠️ Item Stok Menipis</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>SKU</th><th>Nama</th><th>Stok</th><th>Min</th></tr></thead>
+                <tbody id="low-stock-body"><tr><td colspan="4" class="loading-row">Memuat...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <h2>🕒 Aktivitas Terbaru</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Waktu</th><th>Aksi</th></tr></thead>
+                <tbody id="recent-activity-body"><tr><td colspan="2" class="loading-row">Memuat...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-host"></div>
+  <script type="module" src="assets/js/pages/dashboard.js"></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js').catch(()=>{});}</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log Aktivitas — Gudang Pro</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b2226">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="menu-toggle" id="menu-toggle">☰</button>
+          <h1>Log Aktivitas</h1>
+        </div>
+      </div>
+      <div class="content" id="page-content">
+        <div class="card">
+          <div class="toolbar">
+            <h2 style="margin:0;">Riwayat Aktivitas Sistem</h2>
+            <input class="search" id="search-box" placeholder="Cari aksi / detail...">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Waktu</th><th>User</th><th>Aksi</th><th>Detail</th></tr></thead>
+              <tbody id="log-body"><tr><td colspan="4" class="loading-row">Memuat...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-host"></div>
+  <script type="module" src="assets/js/pages/log-aktivitas.js"></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js').catch(()=>{});}</script>
+</body>
+</html>

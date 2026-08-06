@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code — Gudang Pro</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b2226">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  .qr-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px; }
+  .qr-tile{ background:#fff; border:1px solid var(--line); border-radius:6px; padding:14px; text-align:center; }
+  .qr-tile canvas{ margin:0 auto 8px; }
+  .qr-tile .sku{ font-family:var(--font-mono); font-size:12px; font-weight:600; }
+  .qr-tile .name{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  @media print {
+    .no-print{ display:none !important; }
+    .sidebar, .topbar{ display:none !important; }
+    .content{ padding:0; }
+  }
+</style>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main">
+      <div class="topbar no-print">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="menu-toggle" id="menu-toggle">☰</button>
+          <h1>QR Code</h1>
+        </div>
+        <button class="btn btn-outline" id="btn-print">🖨️ Cetak Label</button>
+      </div>
+      <div class="content">
+        <div class="card no-print" style="margin-bottom:16px;">
+          <div class="toolbar">
+            <h2 style="margin:0;">Pilih Item untuk Generate QR</h2>
+            <input class="search" id="search-box" placeholder="Cari SKU / nama item...">
+          </div>
+          <p style="color:var(--ink-soft);font-size:13px;">QR berisi kode SKU item. Scan lewat menu <b>Scan QR</b> untuk lookup cepat + input stok masuk/keluar.</p>
+        </div>
+        <div class="card">
+          <div id="qr-grid" class="qr-grid"><div class="loading-row">Memuat item...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-host"></div>
+  <script type="module" src="assets/js/pages/qr-code.js"></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js').catch(()=>{});}</script>
+</body>
+</html>

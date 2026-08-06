@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TrackFlow — Masuk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-rail"><span></span><span></span><span></span></div>
+    <div class="brand"><div class="brand-mark"></div><h1>TrackFlow</h1></div>
+    <p class="auth-sub" id="authSub">Order, QC &amp; Supply Material — masuk untuk melanjutkan</p>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" required autocomplete="email" placeholder="nama@perusahaan.com">
+      </div>
+      <div class="field">
+        <label for="password">Kata sandi</label>
+        <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+
+      <div class="field" id="signupExtra" style="display:none;">
+        <label for="fullName">Nama lengkap</label>
+        <input type="text" id="fullName" placeholder="Nama kamu">
+        <div style="height:12px;"></div>
+        <label for="role">Bagian</label>
+        <select id="role">
+          <option value="gudang">Gudang (Warehouse)</option>
+          <option value="qc">Quality Control</option>
+          <option value="supply">Supply Material</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submitBtn">Masuk</button>
+    </form>
+
+    <div class="auth-toggle">
+      <span id="toggleText">Belum punya akun?</span>
+      <button type="button" id="toggleBtn">Daftar di sini</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabaseClient.js"></script>
+<script>
+let mode = "login"; // or "signup"
+const form = document.getElementById("loginForm");
+const errorBox = document.getElementById("errorBox");
+const submitBtn = document.getElementById("submitBtn");
+const toggleBtn = document.getElementById("toggleBtn");
+const toggleText = document.getElementById("toggleText");
+const authSub = document.getElementById("authSub");
+const signupExtra = document.getElementById("signupExtra");
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.classList.add("show");
+}
+function clearError(){ errorBox.classList.remove("show"); }
+
+toggleBtn.addEventListener("click", () => {
+  clearError();
+  if(mode === "login"){
+    mode = "signup";
+    submitBtn.textContent = "Daftar";
+    toggleText.textContent = "Sudah punya akun?";
+    toggleBtn.textContent = "Masuk di sini";
+    authSub.textContent = "Buat akun baru untuk bagian kamu";
+    signupExtra.style.display = "block";
+  } else {
+    mode = "login";
+    submitBtn.textContent = "Masuk";
+    toggleText.textContent = "Belum punya akun?";
+    toggleBtn.textContent = "Daftar di sini";
+    authSub.textContent = "Order, QC & Supply Material — masuk untuk melanjutkan";
+    signupExtra.style.display = "none";
+  }
+});
+
+// If already logged in, go straight to dashboard
+supabaseClient.auth.getSession().then(({ data }) => {
+  if(data.session) window.location.href = "app.html";
+});
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearError();
+  submitBtn.disabled = true;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  try{
+    if(mode === "login"){
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if(error) throw error;
+      window.location.href = "app.html";
+    } else {
+      const fullName = document.getElementById("fullName").value.trim();
+      const role = document.getElementById("role").value;
+      if(!fullName) throw new Error("Nama lengkap wajib diisi");
+      const { error } = await supabaseClient.auth.signUp({
+        email, password,
+        options: { data: { full_name: fullName, role } }
+      });
+      if(error) throw error;
+      window.location.href = "app.html";
+    }
+  } catch(err){
+    showError(err.message || "Terjadi kesalahan, coba lagi.");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
